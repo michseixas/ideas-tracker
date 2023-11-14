@@ -1,27 +1,40 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { databases } from "../appwrite";
-import { ID, Query } from "appwrite";
+import { ID, Query } from "appwrite"; // Imports 2 classes from Appwrite, ID will generate unique ID's, Query will retrieve documents from the database.
 
-export const IDEAS_DATABASE_ID = "<YOUR_DATABASE_ID>"; // Replace with your database ID
-export const IDEAS_COLLECTION_ID = "<YOUR_COLLECTION_ID>"; // Replace with your collection ID
+export const IDEAS_DATABASE_ID = "654eb3786e1981f4aead"; // Replace with your database ID
+export const IDEAS_COLLECTION_ID = "ideas-tracker"; // Replace with your collection ID
 
-const IdeasContext = createContext();
+const IdeasContext = createContext(); // creates a context called IdeasContext, to share data between components
 
 export function useIdeas() {
+     // useIdeas is a custom hook that is used to access the data stored in a IdeasContext
   return useContext(IdeasContext);
 }
 
 export function IdeasProvider(props) {
+    //IdeasProvider is a function component used to provide data to components down the tree
+
   const [ideas, setIdeas] = useState([]);
+  //here the 'ideas' state is created with an empty array as the 'ideas' value. 
+  //'setIdeas' is in plural. Meaning that it will be a collection of ideas that will be pushed inside the array
+
 
   async function add(idea) {
+    //this add function receives an idea as argument
+
     const response = await databases.createDocument(
       IDEAS_DATABASE_ID,
       IDEAS_COLLECTION_ID,
+      //here an unique ID for the idea is generated.
       ID.unique(),
+      //here, the 'idea' is the text received as the argument of the add function
       idea
     );
     setIdeas((ideas) => [response.$id, ...ideas].slice(0, 10));
+    //this calls the setIdeas function with the ideas that already exist as argument ('ideas')
+    // creates a new array with the new ID on position 0, and then the other IDs that already exists,
+    //up to 9 ideas (index 10). The slice method cuts the resulting array that exceed position index 10.
   }
 
   async function remove(id) {
