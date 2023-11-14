@@ -40,23 +40,33 @@ export function IdeasProvider(props) {
   async function remove(id) {
     await databases.deleteDocument(IDEAS_DATABASE_ID, IDEAS_COLLECTION_ID, id);
     setIdeas((ideas) => ideas.filter((idea) => idea.$id !== id));
+    // this function removes the item (idea) from the array based on an unique ID. 
+    //to remove the idea from the array, a filter is implemented, in which all the ideas not equal to the 
+    //ID that we want to delete are kept.
     await init(); // Refetch ideas to ensure we have 10 items
   }
 
   async function init() {
+    //this function fetches the documents (ideas) existing in the database & collection, 
+    //the order in which it's presented is descendant and limited to 10 documents.
     const response = await databases.listDocuments(
       IDEAS_DATABASE_ID,
       IDEAS_COLLECTION_ID,
       [Query.orderDesc("$createdAt"), Query.limit(10)]
     );
     setIdeas(response.documents);
+    //puts the query response into the ideas state, thus updating the state
   }
 
   useEffect(() => {
+    //this useEffect calls the init function. The empty dependency array [] means that this function is called only the first time 
     init();
   }, []);
 
   return (
+    //the IdeasContext.Provider wraps a portion of the component tree, 
+    //making the 'ideas' state and add & remove functions
+    //available to all components that are descendants of this provider
     <IdeasContext.Provider value={{ current: ideas, add, remove }}>
       {props.children}
     </IdeasContext.Provider>
