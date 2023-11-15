@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUser } from "../lib/context/user";
 import { useIdeas } from "../lib/context/ideas";
 
+
 export function Home() {
   //here is the component Home, with 'user' and 'ideas' that come from context.
   const user = useUser();
@@ -12,6 +13,7 @@ export function Home() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  console.log(" current ideas -> ", ideas)
   return (
     <>
       {/* Show the submit form to logged in users. */}

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { account } from "../appwrite";
+import { ID } from "appwrite";
 
 const UserContext = createContext();
 
@@ -32,10 +33,12 @@ export function UserProvider(props) {
   }
 
   async function register(email, password) {
+    console.log("aqui esta lo que queremos", email)
+    console.log("aqui esta lo que queremos 2 veces", password)
     //this async funtion receives email and password and creates the account using appwrite
     //Once the account is created, a call to the login function is made, passing the same email and
     //password just registered. The 'login' function will the update the 'user' state
-    await account.create(email, password);
+    await account.create(ID.unique(), email, password);
     await login(email, password);
   }
 
